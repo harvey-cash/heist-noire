@@ -78,7 +78,7 @@ public abstract class SecurityObject : MonoBehaviour {
             {
                 Player hitPlayer = hit.rigidbody.GetComponent<Player>();
                 float angle = Vector3.Angle(transform.forward, targetDir.normalized);
-                if (hitPlayer && angle < 20)
+                if (hitPlayer && angle < 5)
                 {
                     
 

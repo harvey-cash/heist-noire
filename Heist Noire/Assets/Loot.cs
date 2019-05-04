@@ -26,7 +26,6 @@ public class Loot : MonoBehaviour
 
     public void OnUse(Player player)
     {
-        player.RemoveLootFromInventory(this);
         UseEffect(player);
     }
     
