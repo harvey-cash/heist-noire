@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     private Loot[] lootInWorld;
     private int inventorySize = 6;
     public int InventorySize => inventorySize;
+    public Sprite[] WalkCycleSprites;
 
     public float lootDistance = 10;
     private Loot[] currentLoot;
@@ -20,11 +21,16 @@ public class Player : MonoBehaviour
     public int InventoryIndex = 0;
     
     public Transform lootHolder;
+    private SpriteRenderer spriteRenderer;
+    private Animator animator;
+    
     
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
         currentLoot = new Loot[inventorySize];
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         InventoryUI.Instance.Init(this);
     }
 
@@ -58,22 +64,82 @@ public class Player : MonoBehaviour
     void InputScript()
     {
         Vector3 movement_vector = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        rb.MovePosition(rb.position + (movement_vector * speed) * Time.deltaTime);
 
-        if (Input.GetKeyDown(KeyCode.P))
+        if (movement_vector.magnitude > 0.3f)
+        {
+            animator.SetBool("Walk", true);
+            if (movement_vector.x < 0)
+                spriteRenderer.transform.localScale = new Vector3(-0.4f,0.4f,0.4f);
+            else
+                spriteRenderer.transform.localScale = new Vector3(0.4f,0.4f,0.4f);
+            rb.MovePosition(rb.position + (movement_vector * speed) * Time.deltaTime);
+            animator.speed = movement_vector.magnitude / 2f;
+        }
+        else
+        {
+
+            animator.SetBool("Walk", false);
+            animator.speed = 0;
+        }
+
+
+
+        if (Input.GetButtonDown("Inventory Up"))
         {
             IncreaseInventoryIndex();
         }
-        if (Input.GetKeyDown(KeyCode.O))
+        if (Input.GetButtonDown("Inventory Down"))
         {
             DecreaseInventoryIndex();
         }
-        
+
+        if (!pickingUpLoot)
+        {
+            if (Input.GetButtonDown("Drop"))
+            {
+                DropLoot();
+            }
+        }
+
+    }
+    
+    private void DropLoot()
+    {
+        if (currentLoot[InventoryIndex])
+        {
+            Loot loot = currentLoot[InventoryIndex];
+            loot.transform.position = transform.position - Vector3.forward;
+            loot.gameObject.SetActive(true);
+            
+            loot.OnDrop(this);
+            
+        }
+    }
+
+    private void UseLoot()
+    {
+        if (currentLoot[InventoryIndex])
+        {
+            currentLoot[InventoryIndex].OnUse(this);
+            
+        }
+    }
+
+    public void RemoveLootFromInventory(Loot loot)
+    {
+        int index = Array.IndexOf(currentLoot, loot);
+        if (index >= 0)
+        {
+            Debug.Log("clearing index " + index);
+            currentLoot[index] = null;
+            InventoryUI.Instance.UpdateIcons();
+        }
     }
 
     private void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.Space))
+
+        if (Input.GetAxis("Pick Up") > 0.3f)
         {
             if (!pickingUpLoot)
             {
@@ -86,8 +152,7 @@ public class Player : MonoBehaviour
                 PickupLoot();
             }
         }
-
-        if (Input.GetKeyUp(KeyCode.Space))
+        else
         {
             pickingUpLoot = false;
         }
@@ -102,7 +167,7 @@ public class Player : MonoBehaviour
         {
             if (!lootObject.PickedUp)
             {
-                lootObject.rb.AddExplosionForce(-10,transform.position, lootDistance);
+                lootObject.rb.AddExplosionForce(-50,transform.position, lootDistance);
             }
         }
     }

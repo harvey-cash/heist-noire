@@ -56,6 +56,10 @@ public class InventoryUI : MonoBehaviour
         {
             Icon.sprite = loot.Icon;
         }
+        else
+        {
+            Icon.sprite = null;
+        }
     }
     
 }
