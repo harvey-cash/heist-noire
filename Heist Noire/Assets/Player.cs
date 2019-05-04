@@ -28,11 +28,6 @@ public class Player : MonoBehaviour
     
     void Start()
     {
-        cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cube.transform.localScale = Vector3.one * 0.4f;
-        Destroy(cube.GetComponent<Collider>());
-        cube.transform.position = transform.position;
-        cube.transform.SetParent(transform);
         rb = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
         currentLoot = new Loot[inventorySize];
@@ -50,9 +45,6 @@ public class Player : MonoBehaviour
     void Update()
     {
         InputScript();
-        Debug.Log("X: " + Input.GetAxisRaw("XAim") + ", Y: " + Input.GetAxisRaw("YAim"));
-        Console.Clear();
-        cube.transform.localPosition = 4 * new Vector3(Input.GetAxisRaw("XAim"), 0.25f, Input.GetAxisRaw("YAim"));
     }
 
     private void IncreaseInventoryIndex()
@@ -208,7 +200,7 @@ public class Player : MonoBehaviour
         Vector3 direction = new Vector3(Input.GetAxisRaw("XAim"), 0, Input.GetAxisRaw("YAim"));
         if (direction.magnitude > 0.3f)
         {
-            Debug.Log(direction);
+            Debug.Log("throwing: " + direction);
             loot.rb.AddForce(direction * speed, ForceMode.VelocityChange);
         }
         
