@@ -11,7 +11,8 @@ public class Turret : SecurityObject
     private Quaternion lostRot;
 
     protected override void OnFoundPlayer(PlayerDecoy player) {
-        GetComponent<Renderer>().material.color = Color.red;        
+        GetComponent<Renderer>().material.color = Color.red;
+
     }
 
     protected override void OnLostPlayer() {
