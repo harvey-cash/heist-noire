@@ -23,15 +23,22 @@ public class Player : MonoBehaviour
     public Transform lootHolder;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
+    private Collider[] colliders;
+    private GameObject cube;
     
-    
-    void Awake()
+    void Start()
     {
+        cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.transform.localScale = Vector3.one * 0.4f;
+        Destroy(cube.GetComponent<Collider>());
+        cube.transform.position = transform.position;
+        cube.transform.SetParent(transform);
         rb = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
         currentLoot = new Loot[inventorySize];
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         InventoryUI.Instance.Init(this);
+        colliders = GetComponentsInChildren<Collider>();
     }
 
     private bool InventoryHasSpace()
@@ -43,6 +50,9 @@ public class Player : MonoBehaviour
     void Update()
     {
         InputScript();
+        Debug.Log("X: " + Input.GetAxisRaw("XAim") + ", Y: " + Input.GetAxisRaw("YAim"));
+        Console.Clear();
+        cube.transform.localPosition = 4 * new Vector3(Input.GetAxisRaw("XAim"), 0.25f, Input.GetAxisRaw("YAim"));
     }
 
     private void IncreaseInventoryIndex()
@@ -79,7 +89,7 @@ public class Player : MonoBehaviour
         {
 
             animator.SetBool("Walk", false);
-            animator.speed = 0;
+            animator.speed = 0.2f;
         }
 
 
@@ -97,32 +107,29 @@ public class Player : MonoBehaviour
         {
             if (Input.GetButtonDown("Drop"))
             {
-                DropLoot();
+                DropLoot(currentLoot[InventoryIndex]);
+            }
+            else if (Input.GetAxis("Use") > 0.3f)
+            {
+                UseLoot(currentLoot[InventoryIndex]);
             }
         }
 
     }
     
-    private void DropLoot()
+    private void DropLoot(Loot loot)
     {
-        if (currentLoot[InventoryIndex])
-        {
-            Loot loot = currentLoot[InventoryIndex];
             loot.transform.position = transform.position - Vector3.forward;
             loot.gameObject.SetActive(true);
             
             loot.OnDrop(this);
-            
-        }
     }
+    
 
-    private void UseLoot()
+    private void UseLoot(Loot loot)
     {
-        if (currentLoot[InventoryIndex])
-        {
-            currentLoot[InventoryIndex].OnUse(this);
-            
-        }
+        if (loot)
+            loot.OnUse(this);
     }
 
     public void RemoveLootFromInventory(Loot loot)
@@ -130,7 +137,6 @@ public class Player : MonoBehaviour
         int index = Array.IndexOf(currentLoot, loot);
         if (index >= 0)
         {
-            Debug.Log("clearing index " + index);
             currentLoot[index] = null;
             InventoryUI.Instance.UpdateIcons();
         }
@@ -188,7 +194,26 @@ public class Player : MonoBehaviour
             InventoryUI.Instance.UpdateIcons();
         }
     }
+
+    public void ThrowLoot(Loot loot, float speed)
+    {
+        DropLoot(loot);
+        RemoveLootFromInventory(loot);
+        loot.transform.position = transform.position;
+        foreach (var c in colliders)
+        {
+           Physics.IgnoreCollision(loot.GetComponentInChildren<Collider>(), c);
+        }
+        Physics.IgnoreCollision(loot.GetComponentInChildren<Collider>(), GetComponentInChildren<Collider>());
+        Vector3 direction = new Vector3(Input.GetAxisRaw("XAim"), 0, Input.GetAxisRaw("YAim"));
+        if (direction.magnitude > 0.3f)
+        {
+            Debug.Log(direction);
+            loot.rb.AddForce(direction * speed, ForceMode.VelocityChange);
+        }
         
+    }
+    
     
     private void OnCollisionEnter(Collision other)
     {

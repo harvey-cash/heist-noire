@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class GreenLoot : Loot
 {
-    protected override void Awake()
+    protected override void UseEffect(Player player)
     {
-        base.Awake();
+        player.ThrowLoot(this, 10);
+        PickedUp = false;
+        
     }
 }
