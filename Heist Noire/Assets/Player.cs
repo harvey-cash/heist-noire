@@ -68,7 +68,10 @@ public class Player : MonoBehaviour
         if (movement_vector.magnitude > 0.3f)
         {
             animator.SetBool("Walk", true);
-            spriteRenderer.flipX = (movement_vector.x < 0);
+            if (movement_vector.x < 0)
+                spriteRenderer.transform.localScale = new Vector3(-0.4f,0.4f,0.4f);
+            else
+                spriteRenderer.transform.localScale = new Vector3(0.4f,0.4f,0.4f);
             rb.MovePosition(rb.position + (movement_vector * speed) * Time.deltaTime);
             animator.speed = movement_vector.magnitude / 2f;
         }
@@ -89,11 +92,53 @@ public class Player : MonoBehaviour
         {
             DecreaseInventoryIndex();
         }
-        
+
+        if (!pickingUpLoot)
+        {
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                DropLoot();
+            }
+        }
+
+    }
+    
+    private void DropLoot()
+    {
+        if (currentLoot[InventoryIndex])
+        {
+            Loot loot = currentLoot[InventoryIndex];
+            loot.transform.position = transform.position - Vector3.forward;
+            loot.gameObject.SetActive(true);
+            
+            loot.OnDrop(this);
+            
+        }
+    }
+
+    private void UseLoot()
+    {
+        if (currentLoot[InventoryIndex])
+        {
+            currentLoot[InventoryIndex].OnUse(this);
+            
+        }
+    }
+
+    public void RemoveLootFromInventory(Loot loot)
+    {
+        int index = Array.IndexOf(currentLoot, loot);
+        if (index >= 0)
+        {
+            Debug.Log("clearing index " + index);
+            currentLoot[index] = null;
+            InventoryUI.Instance.UpdateIcons();
+        }
     }
 
     private void FixedUpdate()
     {
+
         if (Input.GetKey(KeyCode.Space))
         {
             if (!pickingUpLoot)
@@ -107,8 +152,7 @@ public class Player : MonoBehaviour
                 PickupLoot();
             }
         }
-
-        if (Input.GetKeyUp(KeyCode.Space))
+        else
         {
             pickingUpLoot = false;
         }

@@ -23,4 +23,21 @@ public class Loot : MonoBehaviour
         gameObject.SetActive(false);
         player.AddLoot(this);
     }
+
+    public void OnUse(Player player)
+    {
+        player.RemoveLootFromInventory(this);
+        UseEffect(player);
+    }
+    
+    public void OnDrop(Player player)
+    {
+        player.RemoveLootFromInventory(this);
+        PickedUp = false;
+    }
+
+    protected virtual void UseEffect(Player player)
+    {
+        
+    }
 }
