@@ -84,18 +84,18 @@ public class Player : MonoBehaviour
 
 
 
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetButtonDown("Inventory Up"))
         {
             IncreaseInventoryIndex();
         }
-        if (Input.GetKeyDown(KeyCode.O))
+        if (Input.GetButtonDown("Inventory Down"))
         {
             DecreaseInventoryIndex();
         }
 
         if (!pickingUpLoot)
         {
-            if (Input.GetKeyDown(KeyCode.I))
+            if (Input.GetButtonDown("Drop"))
             {
                 DropLoot();
             }
@@ -139,7 +139,7 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetAxis("Pick Up") > 0.3f)
         {
             if (!pickingUpLoot)
             {
