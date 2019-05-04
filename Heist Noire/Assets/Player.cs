@@ -7,7 +7,7 @@ public class Player : MonoBehaviour, IDamageable
 {
 
 
-    private Rigidbody rb;
+    public Rigidbody rb;
     public float speed = 7;
     private bool pickingUpLoot;
     private Loot[] lootInWorld;

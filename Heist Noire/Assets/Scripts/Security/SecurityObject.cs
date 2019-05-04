@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public abstract class SecurityObject : MonoBehaviour {
 
@@ -15,6 +16,7 @@ public abstract class SecurityObject : MonoBehaviour {
     void Awake()
     {
         player = FindObjectOfType<Player>();
+        GetComponentInChildren<Light>().enabled = true;
         lrenderer = GetComponent<LineRenderer>();
     }
     
@@ -24,6 +26,8 @@ public abstract class SecurityObject : MonoBehaviour {
         projectile.transform.position = transform.position + direction;
         projectile.transform.forward = direction;
         projectile.transform.localScale = Vector3.one * 0.4f;
+        projectile.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
+        projectile.GetComponent<Collider>().isTrigger = true;
         Rigidbody pRBody = projectile.AddComponent<Rigidbody>();
         pRBody.useGravity = false;
         foreach (var c in GetComponents<Collider>())
@@ -44,68 +48,49 @@ public abstract class SecurityObject : MonoBehaviour {
     protected abstract void Chase();
     protected abstract void Search();
 
-    private void Update()
+    void LookForPlayer()
     {
-        if (!player)
-            return;
         Vector3 targetDir = player.transform.position - transform.position;
-        if (securityState == SecurityState.PATROLLING) {
-            Patrol();
-        }
-        if (securityState == SecurityState.CHASING) {
-            Chase();
-        }
-        if (securityState == SecurityState.SEARCHING) {
-            Search();
-        }
-
-        RaycastHit forwardHit;
-        if (Physics.Raycast(transform.position, transform.forward, out forwardHit, 10000))
-        {
-            lrenderer.positionCount = 2;
-            lrenderer.SetPositions(new[] {transform.position, forwardHit.point});
-        }
-        else
-        {
-            lrenderer.positionCount = 2;
-            lrenderer.SetPositions(new[] {transform.position, transform.position + transform.forward * 10000});
-        }
-        
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, targetDir, out hit, 20))
+        if (Physics.Raycast(transform.position, targetDir, out hit, 10000))
         {
             if (hit.rigidbody)
             {
                 Player hitPlayer = hit.rigidbody.GetComponent<Player>();
                 float angle = Vector3.Angle(transform.forward, targetDir.normalized);
-                if (hitPlayer && angle < 5)
+                if (hitPlayer && angle < 5 && hit.distance < 50)
                 {
-                    
-
+                    GetComponentInChildren<Light>().color = Color.red;
+                    playerTarget = hitPlayer;
                     if (securityState == SecurityState.SEARCHING || securityState == SecurityState.PATROLLING)
                     {
                         securityState = SecurityState.CHASING;
+                        
                         if (!playerTarget)
                         {
-                            playerTarget = hitPlayer;
+                            
                             OnFoundPlayer(hitPlayer);
+                            
                         }
                         
                     }
                 }
                 else
                 {
+                    GetComponentInChildren<Light>().color = Color.white;
                     if (securityState == SecurityState.CHASING)
                     {
                         securityState = SecurityState.SEARCHING;
                         lrenderer.positionCount = 0;
                         playerTarget = null;
                         OnLostPlayer();
+                        
                     }
                 }
             }
             else
             {
+                GetComponentInChildren<Light>().color = Color.white;
                 if (securityState == SecurityState.CHASING)
                 {
                     securityState = SecurityState.SEARCHING;
@@ -115,6 +100,26 @@ public abstract class SecurityObject : MonoBehaviour {
                 }
             }
 
+        }
+    }
+    
+    private void Update()
+    {
+        if (!player)
+            return;
+        
+        
+        LookForPlayer();
+        
+        
+        if (securityState == SecurityState.PATROLLING) {
+            Patrol();
+        }
+        if (securityState == SecurityState.CHASING) {
+            Chase();
+        }
+        if (securityState == SecurityState.SEARCHING) {
+            Search();
         }
         
     }

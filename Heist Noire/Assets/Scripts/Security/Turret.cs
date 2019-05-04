@@ -7,7 +7,7 @@ public class Turret : SecurityObject, IDamageable
     [SerializeField]
     private float swingRange = 90;
     private float speedCoeff = 0.5f, chaseCoeff = 0.1f;
-    private float shootDelay = 0.5f;
+    private float shootDelay = 0.1f;
 
     private float progress = 0, resetTime = 0, reloadTime = 0;
     private Quaternion lostRot;
@@ -45,11 +45,12 @@ public class Turret : SecurityObject, IDamageable
 
     protected override void Chase() {
 
-        if (playerTarget != null) {
+        if (playerTarget != null) 
+        {
 
-            Vector3 targetDir = playerTarget.transform.position - transform.position;
+            Vector3 targetDir = playerTarget.transform.position + playerTarget.rb.velocity * 5 - transform.position;
 
-            transform.forward = Vector3.RotateTowards(transform.forward, targetDir , speedCoeff * Time.deltaTime, 0);
+            transform.forward = Vector3.RotateTowards(transform.forward, targetDir , speedCoeff * 4 * Time.deltaTime, 0);
 
             transform.localEulerAngles = Vector3.Scale(Vector3.up, transform.localEulerAngles);
             float angle = (transform.localEulerAngles.y + 360) % 360;
@@ -61,7 +62,7 @@ public class Turret : SecurityObject, IDamageable
 
             reloadTime += Time.deltaTime;
             if (reloadTime > shootDelay) {
-                FireProjectile(transform.forward, 250);
+                FireProjectile(transform.forward, 200);
                 reloadTime = 0;
             }
         }
