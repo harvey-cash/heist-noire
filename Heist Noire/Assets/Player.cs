@@ -24,7 +24,6 @@ public class Player : MonoBehaviour, IDamageable
     private SpriteRenderer spriteRenderer;
     private Animator animator;
     private Collider[] colliders;
-    private GameObject cube;
     
     void Start()
     {
@@ -179,6 +178,8 @@ public class Player : MonoBehaviour, IDamageable
         pickingUpLoot = true;
         foreach (var lootObject in lootInWorld)
         {
+            if (!lootObject)
+                continue;
             if (!lootObject.PickedUp)
             {
                 lootObject.rb.AddExplosionForce(-50,transform.position, lootDistance);

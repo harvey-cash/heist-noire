@@ -21,9 +21,14 @@ public class ThrowableLoot : Loot, IProjectable
                 if (other.rigidbody.GetComponent<Turret>())
                     other.rigidbody.GetComponent<Turret>().TakeDamage(1);
             }
-
-            Destroy(gameObject);
+            StopAllCoroutines();
+            Invoke("DeleteSelf", 2f);
         }
+    }
+
+    void DeleteSelf()
+    {
+        Destroy(gameObject);
     }
 
     public void OnLaunch()
