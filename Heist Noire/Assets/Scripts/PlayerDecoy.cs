@@ -13,6 +13,6 @@ public class PlayerDecoy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        transform.localPosition += new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")) * Time.deltaTime;
     }
 }

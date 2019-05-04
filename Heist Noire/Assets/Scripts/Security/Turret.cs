@@ -23,9 +23,18 @@ public class Turret : SecurityObject
     protected override void Chase() {
 
         if (playerTarget != null) {
-            float chaseDir = Vector3.SignedAngle(transform.forward, playerTarget.transform.position - transform.position, Vector3.up);
-            Quaternion chaseRot = Quaternion.Euler(new Vector3(0, chaseDir * chaseCoeff, 0));
-            transform.localRotation = transform.localRotation * chaseRot;
+
+            Vector3 targetDir = playerTarget.transform.position - transform.position;
+
+            transform.forward = Vector3.RotateTowards(transform.forward, targetDir , 5 * Time.deltaTime, 0);
+
+            transform.localEulerAngles = Vector3.Scale(Vector3.up, transform.localEulerAngles);
+            float angle = (transform.localEulerAngles.y + 360) % 360;
+
+            if (angle > swingRange && angle < 180)
+                transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, swingRange, transform.localEulerAngles.z);
+            else if (angle < 360 - swingRange && angle > 180)
+                transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, -swingRange, transform.localEulerAngles.z);
 
             reloadTime += Time.deltaTime;
             if (reloadTime > shootDelay) {
