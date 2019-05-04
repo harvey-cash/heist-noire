@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,32 +11,63 @@ public class Player : MonoBehaviour
     public float speed = 10;
     private bool pickingUpLoot;
     private Loot[] lootInWorld;
+    private int inventorySize = 6;
+    public int InventorySize => inventorySize;
+
     public float lootDistance = 10;
-    private List<Loot> currentLoot;
+    private Loot[] currentLoot;
+    public Loot[] CurrentLoot => currentLoot;
+    public int InventoryIndex = 0;
+    
     public Transform lootHolder;
+    
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        currentLoot = new List<Loot>();
-    }
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+        currentLoot = new Loot[inventorySize];
+        InventoryUI.Instance.Init(this);
     }
 
-    // Update is called once per frame
+    private bool InventoryHasSpace()
+    {
+        return Array.Exists(currentLoot, loot1 => loot1 == null);
+    }
+    
+    // Update is called once per frames
     void Update()
     {
         InputScript();
     }
 
+    private void IncreaseInventoryIndex()
+    {
+        InventoryIndex++;
+        if (InventoryIndex >= inventorySize)
+            InventoryIndex = 0;
+        InventoryUI.Instance.UpdateIcons();
+    }
+    
+    private void DecreaseInventoryIndex()
+    {
+        InventoryIndex--;
+        if (InventoryIndex < 0)
+            InventoryIndex = inventorySize - 1;
+        InventoryUI.Instance.UpdateIcons();
+    }
+
     void InputScript()
     {
-        Vector3 movement_vector = new Vector3(Input.GetAxisRaw("Horizontal"),0, Input.GetAxisRaw("Vertical"));
+        Vector3 movement_vector = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         rb.MovePosition(rb.position + (movement_vector * speed) * Time.deltaTime);
-        
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            IncreaseInventoryIndex();
+        }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            DecreaseInventoryIndex();
+        }
         
     }
 
@@ -59,6 +91,8 @@ public class Player : MonoBehaviour
         {
             pickingUpLoot = false;
         }
+        
+        
     }
 
     void PickupLoot()
@@ -75,10 +109,18 @@ public class Player : MonoBehaviour
 
     public void AddLoot(Loot loot)
     {
-        if (!currentLoot.Contains(loot))
+        if (InventoryHasSpace() && !Array.Exists(currentLoot, loot1 => loot1 == loot))
         {
-            currentLoot.Add(loot);
+            for (int i = 0; i < inventorySize; i++)
+            {
+                if (!currentLoot[i])
+                {
+                    currentLoot[i] = loot;
+                    break;
+                }
+            }
             loot.transform.parent = lootHolder;
+            InventoryUI.Instance.UpdateIcons();
         }
     }
         
@@ -92,7 +134,7 @@ public class Player : MonoBehaviour
             Loot loot = other.rigidbody.gameObject.GetComponent<Loot>();
             if (loot)
             {
-                if (!loot.PickedUp)
+                if (!loot.PickedUp && InventoryHasSpace())
                 {
                     loot.OnPickup(this);
                 }

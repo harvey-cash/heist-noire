@@ -5,10 +5,12 @@ using UnityEngine;
 public class Loot : MonoBehaviour
 {
 
+    public int value;
     public bool PickedUp;
     public Rigidbody rb;
+    public Sprite Icon;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }
