@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamageable
 {
 
 
     private Rigidbody rb;
-    public float speed = 10;
+    public float speed = 7;
     private bool pickingUpLoot;
     private Loot[] lootInWorld;
     private int inventorySize = 6;
@@ -34,6 +34,20 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         InventoryUI.Instance.Init(this);
         colliders = GetComponentsInChildren<Collider>();
+    }
+
+    public void OnDie()
+    {
+        Destroy(gameObject);
+    }
+    
+    public void OnHit()
+    {
+    }
+
+    public void TakeDamage(int x)
+    {
+        OnDie();
     }
 
     private bool InventoryHasSpace()
@@ -111,10 +125,12 @@ public class Player : MonoBehaviour
     
     private void DropLoot(Loot loot)
     {
-            loot.transform.position = transform.position - Vector3.forward;
-            loot.gameObject.SetActive(true);
-            
-            loot.OnDrop(this);
+        if (!loot)
+            return;
+        loot.transform.position = transform.position - Vector3.forward;
+        loot.gameObject.SetActive(true);
+        
+        loot.OnDrop(this);
     }
     
 
@@ -187,21 +203,24 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void ThrowLoot(Loot loot, float speed)
+    public void ThrowLoot(ThrowableLoot loot, float speed)
     {
         DropLoot(loot);
-        RemoveLootFromInventory(loot);
-        loot.transform.position = transform.position;
-        foreach (var c in colliders)
-        {
-           Physics.IgnoreCollision(loot.GetComponentInChildren<Collider>(), c);
-        }
-        Physics.IgnoreCollision(loot.GetComponentInChildren<Collider>(), GetComponentInChildren<Collider>());
+        
         Vector3 direction = new Vector3(Input.GetAxisRaw("XAim"), 0, Input.GetAxisRaw("YAim"));
         if (direction.magnitude > 0.3f)
         {
+            RemoveLootFromInventory(loot);
+            loot.transform.position = transform.position;
+            foreach (var c in colliders)
+            {
+                Physics.IgnoreCollision(loot.GetComponentInChildren<Collider>(), c);
+            }
+            
             Debug.Log("throwing: " + direction);
-            loot.rb.AddForce(direction * speed, ForceMode.VelocityChange);
+            loot.HasBeenThrown = true;
+            loot.rb.AddForce(direction * speed * direction.magnitude, ForceMode.VelocityChange);
+            loot.OnLaunch();
         }
         
     }

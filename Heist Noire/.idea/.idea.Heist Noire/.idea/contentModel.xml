@@ -10,10 +10,14 @@
         <e p="Loot.cs" t="Include" />
         <e p="Player.cs" t="Include" />
         <e p="Scripts" t="Include">
+          <e p="IDamageable.cs" t="Include" />
+          <e p="IProjectable.cs" t="Include" />
+          <e p="PlayerDecoy.cs" t="Include" />
           <e p="Security" t="Include">
             <e p="SecurityObject.cs" t="Include" />
             <e p="SecurityState.cs" t="Include" />
             <e p="Turret.cs" t="Include" />
+            <e p="TurretBullet.cs" t="Include" />
           </e>
         </e>
         <e p="ThrowableLoot.cs" t="Include" />

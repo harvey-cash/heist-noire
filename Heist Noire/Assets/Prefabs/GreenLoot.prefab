@@ -152,7 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11d015b1a0a78014e82c508c215305be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  value: 0
+  value: 20
   PickedUp: 0
   rb: {fileID: 0}
   Icon: {fileID: 21300000, guid: 553bb9fb8284f6a46814d007bcff2e62, type: 3}
+  HasBeenThrown: 0

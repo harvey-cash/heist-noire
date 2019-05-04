@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Turret : SecurityObject
+public class Turret : SecurityObject, IDamageable
 {
     private float swingRange = 40, speedCoeff = 0.5f, chaseCoeff = 0.1f;
     private float shootDelay = 2;
@@ -10,7 +10,28 @@ public class Turret : SecurityObject
     private float progress = 0, resetTime = 0, reloadTime = 0;
     private Quaternion lostRot;
 
-    protected override void OnFoundPlayer(PlayerDecoy player) {
+    
+    private int health = 2;
+    
+    public void OnDie()
+    {
+        Destroy(gameObject);
+    }
+    
+    public void OnHit()
+    {
+    }
+
+    public void TakeDamage(int x)
+    {
+        health--;
+        if (health < 1)
+        {
+            OnDie();
+        }
+    }
+    
+    protected override void OnFoundPlayer(Player player) {
         GetComponent<Renderer>().material.color = Color.red;
 
     }

@@ -2,21 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ThrowableLoot : Loot
+public class ThrowableLoot : Loot, IProjectable
 {
-    private bool hasBeenThrown = false; 
+    public bool HasBeenThrown = false; 
     
     protected override void UseEffect(Player player)
     {
         player.ThrowLoot(this, 20);
-        hasBeenThrown = true;
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if (hasBeenThrown)
+        if (HasBeenThrown)
         {
+            Rigidbody otherRb = other.rigidbody;
+            if (otherRb)
+            {
+                if (other.rigidbody.GetComponent<Turret>())
+                    other.rigidbody.GetComponent<Turret>().TakeDamage(1);
+            }
+
             Destroy(gameObject);
         }
+    }
+
+    public void OnLaunch()
+    {
+        
+    }
+
+    public void OnImpact()
+    {
+        
     }
 }

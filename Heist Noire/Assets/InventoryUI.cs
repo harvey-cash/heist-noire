@@ -10,6 +10,7 @@ public class InventoryUI : MonoBehaviour
     public Transform IconHighlight;
     public static InventoryUI Instance;
     private Player player;
+    public GameObject LootIcon;
 
     private List<Image> IconImages;
 
@@ -33,9 +34,9 @@ public class InventoryUI : MonoBehaviour
         player = p;
         for (int i = 0; i < player.InventorySize; i++)
         {
-            GameObject IconObject = new GameObject("InventoryIcon" + i);
+            GameObject IconObject = Instantiate(LootIcon);
             IconObject.transform.SetParent(IconHolder);
-            Image IconImage = IconObject.AddComponent<Image>();
+            Image IconImage = IconObject.GetComponent<Image>();
             IconImages.Add(IconImage);
         }
         UpdateIcons();
@@ -55,11 +56,13 @@ public class InventoryUI : MonoBehaviour
     {
         if (loot)
         {
+            Icon.GetComponentInChildren<Text>().text ="$" + loot.value;
             Icon.sprite = loot.Icon;
         }
         else
         {
             Icon.sprite = null;
+            Icon.GetComponentInChildren<Text>().text ="";
         }
     }
     

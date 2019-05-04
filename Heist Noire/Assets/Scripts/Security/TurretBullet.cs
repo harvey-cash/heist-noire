@@ -11,8 +11,10 @@ public class TurretBullet : MonoBehaviour, IProjectable {
 
             damn.TakeDamage(1);
             damn.OnHit();
-            OnImpact();
+            
         }
+        
+        OnImpact();
     }
 
     public void OnImpact() {
