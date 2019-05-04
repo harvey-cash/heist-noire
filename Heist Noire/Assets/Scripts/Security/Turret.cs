@@ -5,25 +5,33 @@ using UnityEngine;
 public class Turret : SecurityObject
 {
     private float swingRange = 40, speedCoeff = 0.5f, chaseCoeff = 0.1f;
+    private float shootDelay = 2;
 
-    private float progress = 0, resetTime = 0;
-    private Quaternion lostRot;    
+    private float progress = 0, resetTime = 0, reloadTime = 0;
+    private Quaternion lostRot;
 
-    protected override void OnFoundPlayer(Player player) {
-        GetComponent<Renderer>().material.color = Color.red;
+    protected override void OnFoundPlayer(PlayerDecoy player) {
+        GetComponent<Renderer>().material.color = Color.red;        
     }
 
     protected override void OnLostPlayer() {
-        GetComponent<Renderer>().material.color = Color.red;
+        GetComponent<Renderer>().material.color = Color.yellow;
         lostRot = transform.localRotation;
         resetTime = 0;
     }
 
     protected override void Chase() {
+
         if (playerTarget != null) {
             float chaseDir = Vector3.SignedAngle(transform.forward, playerTarget.transform.position - transform.position, Vector3.up);
             Quaternion chaseRot = Quaternion.Euler(new Vector3(0, chaseDir * chaseCoeff, 0));
             transform.localRotation = transform.localRotation * chaseRot;
+
+            reloadTime += Time.deltaTime;
+            if (reloadTime > shootDelay) {
+                FireProjectile(transform.forward, 100);
+                reloadTime = 0;
+            }
         }
     }
 
@@ -48,7 +56,12 @@ public class Turret : SecurityObject
         if ((resetTime - waitThenReset) / loseThenSearchTimeout > 1.1f) {
             progress = 0;
             securityState = SecurityState.PATROLLING;
+            OnPatrol();
         }
+    }
+
+    private void OnPatrol() {
+        GetComponent<Renderer>().material.color = Color.green;
     }
     
 }
