@@ -10,51 +10,22 @@ public abstract class SecurityObject : MonoBehaviour {
     [SerializeField]
     public Player playerTarget;
 
-    private void OnTriggerEnter(Collider other)
+    private Player player;
+    private LineRenderer lrenderer;
+    void Awake()
     {
-        if (other.attachedRigidbody)
-        {
-            if (other.attachedRigidbody.GetComponent<Player>() != null)
-            {
-
-
-                if (securityState == SecurityState.SEARCHING || securityState == SecurityState.PATROLLING)
-                {
-                    securityState = SecurityState.CHASING;
-
-                    if (playerTarget == null)
-                    {
-                        playerTarget = other.attachedRigidbody.GetComponent<Player>();
-                        OnFoundPlayer(other.attachedRigidbody.GetComponent<Player>());
-                    }
-                }
-            }
-        }
+        player = FindObjectOfType<Player>();
+        lrenderer = GetComponent<LineRenderer>();
     }
-
-    private void OnTriggerExit(Collider other) {
-        if (other.attachedRigidbody)
-        {
-            if (other.attachedRigidbody.GetComponent<Player>() != null)
-            {
-
-                if (securityState == SecurityState.CHASING)
-                {
-                    securityState = SecurityState.SEARCHING;
-
-                    playerTarget = null;
-                    OnLostPlayer();
-                }
-            }
-        }
-    }
-
-    protected void FireProjectile(Vector3 direction, float force) {
+    
+    protected void FireProjectile(Vector3 direction, float force) 
+    {
         GameObject projectile = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         projectile.transform.position = transform.position + direction;
         projectile.transform.forward = direction;
         projectile.transform.localScale = Vector3.one * 0.4f;
         Rigidbody pRBody = projectile.AddComponent<Rigidbody>();
+        pRBody.useGravity = false;
         foreach (var c in GetComponents<Collider>())
         {
             Physics.IgnoreCollision(projectile.GetComponentInChildren<Collider>(), c);
@@ -73,7 +44,11 @@ public abstract class SecurityObject : MonoBehaviour {
     protected abstract void Chase();
     protected abstract void Search();
 
-    private void Update() {
+    private void Update()
+    {
+        if (!player)
+            return;
+        Vector3 targetDir = player.transform.position - transform.position;
         if (securityState == SecurityState.PATROLLING) {
             Patrol();
         }
@@ -83,6 +58,65 @@ public abstract class SecurityObject : MonoBehaviour {
         if (securityState == SecurityState.SEARCHING) {
             Search();
         }
+
+        RaycastHit forwardHit;
+        if (Physics.Raycast(transform.position, transform.forward, out forwardHit, 10000))
+        {
+            lrenderer.positionCount = 2;
+            lrenderer.SetPositions(new[] {transform.position, forwardHit.point});
+        }
+        else
+        {
+            lrenderer.positionCount = 2;
+            lrenderer.SetPositions(new[] {transform.position, transform.position + transform.forward * 10000});
+        }
+        
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, targetDir, out hit, 20))
+        {
+            if (hit.rigidbody)
+            {
+                Player hitPlayer = hit.rigidbody.GetComponent<Player>();
+                float angle = Vector3.Angle(transform.forward, targetDir.normalized);
+                if (hitPlayer && angle < 20)
+                {
+                    
+
+                    if (securityState == SecurityState.SEARCHING || securityState == SecurityState.PATROLLING)
+                    {
+                        securityState = SecurityState.CHASING;
+                        if (!playerTarget)
+                        {
+                            playerTarget = hitPlayer;
+                            OnFoundPlayer(hitPlayer);
+                        }
+                        
+                    }
+                }
+                else
+                {
+                    if (securityState == SecurityState.CHASING)
+                    {
+                        securityState = SecurityState.SEARCHING;
+                        lrenderer.positionCount = 0;
+                        playerTarget = null;
+                        OnLostPlayer();
+                    }
+                }
+            }
+            else
+            {
+                if (securityState == SecurityState.CHASING)
+                {
+                    securityState = SecurityState.SEARCHING;
+                    lrenderer.positionCount = 0;
+                    playerTarget = null;
+                    OnLostPlayer();
+                }
+            }
+
+        }
+        
     }
 
 }

@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Turret : SecurityObject, IDamageable
 {
-    private float swingRange = 40, speedCoeff = 0.5f, chaseCoeff = 0.1f;
+    [SerializeField]
+    private float swingRange = 90;
+    private float speedCoeff = 0.5f, chaseCoeff = 0.1f;
     private float shootDelay = 2;
 
     private float progress = 0, resetTime = 0, reloadTime = 0;
@@ -48,7 +50,7 @@ public class Turret : SecurityObject, IDamageable
 
             Vector3 targetDir = playerTarget.transform.position - transform.position;
 
-            transform.forward = Vector3.RotateTowards(transform.forward, targetDir , 5 * Time.deltaTime, 0);
+            transform.forward = Vector3.RotateTowards(transform.forward, targetDir , speedCoeff * Time.deltaTime, 0);
 
             transform.localEulerAngles = Vector3.Scale(Vector3.up, transform.localEulerAngles);
             float angle = (transform.localEulerAngles.y + 360) % 360;
