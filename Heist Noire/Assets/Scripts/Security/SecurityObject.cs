@@ -45,6 +45,9 @@ public abstract class SecurityObject : MonoBehaviour {
         Rigidbody pRBody = projectile.AddComponent<Rigidbody>();
         pRBody.mass = 0.1f;
         pRBody.AddForce(direction * force);
+
+        TurretBullet bullet = projectile.AddComponent<TurretBullet>();
+        bullet.OnLaunch();
     }
 
     protected abstract void OnFoundPlayer(PlayerDecoy player);
