@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     private Loot[] lootInWorld;
     private int inventorySize = 6;
     public int InventorySize => inventorySize;
+    public Sprite[] WalkCycleSprites;
 
     public float lootDistance = 10;
     private Loot[] currentLoot;
@@ -20,11 +21,16 @@ public class Player : MonoBehaviour
     public int InventoryIndex = 0;
     
     public Transform lootHolder;
+    private SpriteRenderer spriteRenderer;
+    private Animator animator;
+    
     
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
         currentLoot = new Loot[inventorySize];
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         InventoryUI.Instance.Init(this);
     }
 
@@ -58,7 +64,22 @@ public class Player : MonoBehaviour
     void InputScript()
     {
         Vector3 movement_vector = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        rb.MovePosition(rb.position + (movement_vector * speed) * Time.deltaTime);
+
+        if (movement_vector.magnitude > 0.3f)
+        {
+            animator.SetBool("Walk", true);
+            spriteRenderer.flipX = (movement_vector.x < 0);
+            rb.MovePosition(rb.position + (movement_vector * speed) * Time.deltaTime);
+            animator.speed = movement_vector.magnitude / 2f;
+        }
+        else
+        {
+
+            animator.SetBool("Walk", false);
+            animator.speed = 0;
+        }
+
+
 
         if (Input.GetKeyDown(KeyCode.P))
         {
@@ -102,7 +123,7 @@ public class Player : MonoBehaviour
         {
             if (!lootObject.PickedUp)
             {
-                lootObject.rb.AddExplosionForce(-10,transform.position, lootDistance);
+                lootObject.rb.AddExplosionForce(-50,transform.position, lootDistance);
             }
         }
     }
