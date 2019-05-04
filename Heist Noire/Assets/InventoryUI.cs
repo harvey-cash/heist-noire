@@ -33,7 +33,8 @@ public class InventoryUI : MonoBehaviour
         player = p;
         for (int i = 0; i < player.InventorySize; i++)
         {
-            GameObject IconObject = Instantiate(new GameObject("InventoryIcon" + i), IconHolder);
+            GameObject IconObject = new GameObject("InventoryIcon" + i);
+            IconObject.transform.SetParent(IconHolder);
             Image IconImage = IconObject.AddComponent<Image>();
             IconImages.Add(IconImage);
         }
