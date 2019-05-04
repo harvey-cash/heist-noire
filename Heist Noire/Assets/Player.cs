@@ -50,6 +50,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         InputScript();
+        Debug.Log("X: " + Input.GetAxisRaw("XAim") + ", Y: " + Input.GetAxisRaw("YAim"));
         Console.Clear();
         cube.transform.localPosition = 4 * new Vector3(Input.GetAxisRaw("XAim"), 0.25f, Input.GetAxisRaw("YAim"));
     }
@@ -88,7 +89,7 @@ public class Player : MonoBehaviour
         {
 
             animator.SetBool("Walk", false);
-            animator.speed = 0;
+            animator.speed = 0.2f;
         }
 
 
