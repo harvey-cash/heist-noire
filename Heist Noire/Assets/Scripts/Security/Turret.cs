@@ -61,7 +61,7 @@ public class Turret : SecurityObject, IDamageable
 
             reloadTime += Time.deltaTime;
             if (reloadTime > shootDelay) {
-                FireProjectile(transform.forward, 150);
+                FireProjectile(transform.forward, 250);
                 reloadTime = 0;
             }
         }
