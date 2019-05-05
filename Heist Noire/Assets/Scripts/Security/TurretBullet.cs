@@ -4,19 +4,25 @@ using UnityEngine;
 
 public class TurretBullet : MonoBehaviour, IProjectable {
 
-    void OnTriggerEnter(Collider other) {
+    void OnTriggerEnter(Collider other)
+    {
 
-        if (other.attachedRigidbody.GetComponent<IDamageable>() != null) {
-            IDamageable damn = other.attachedRigidbody.GetComponent<IDamageable>();
-
-            if (other.attachedRigidbody.GetComponent<Player>())
+        Rigidbody otherBody = other.attachedRigidbody;
+        if (otherBody)
+        {
+            if (otherBody.GetComponent<IDamageable>() != null)
             {
-                damn.TakeDamage(1);
-                damn.OnHit();
+                IDamageable damn = otherBody.GetComponent<IDamageable>();
+
+                if (otherBody.GetComponent<Player>())
+                {
+                    damn.TakeDamage(1);
+                    damn.OnHit();
+                }
+
             }
-            
         }
-        
+
         OnImpact();
     }
 

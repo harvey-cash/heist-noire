@@ -11,7 +11,9 @@
         <e p="Key.cs" t="Include" />
         <e p="Loot.cs" t="Include" />
         <e p="Player.cs" t="Include" />
+        <e p="Robot.cs" t="Include" />
         <e p="Scripts" t="Include">
+          <e p="CameraManager.cs" t="Include" />
           <e p="IDamageable.cs" t="Include" />
           <e p="IProjectable.cs" t="Include" />
           <e p="PlayerDecoy.cs" t="Include" />

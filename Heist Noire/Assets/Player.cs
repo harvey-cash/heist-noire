@@ -8,7 +8,7 @@ public class Player : MonoBehaviour, IDamageable
 
 
     public Rigidbody rb;
-    public float speed = 7;
+    public float speed = 4;
     private bool pickingUpLoot;
     private Loot[] lootInWorld;
     private int inventorySize = 6;

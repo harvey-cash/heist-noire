@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public abstract class SecurityObject : MonoBehaviour {
+public abstract class SecurityObject : MonoBehaviour
+{
 
+    protected Rigidbody rb;
     protected SecurityState securityState = SecurityState.PATROLLING;
     protected float loseThenSearchTimeout = 2;
 
@@ -12,12 +14,11 @@ public abstract class SecurityObject : MonoBehaviour {
     public Player playerTarget;
 
     private Player player;
-    private LineRenderer lrenderer;
-    void Awake()
+    protected virtual void Awake()
     {
         player = FindObjectOfType<Player>();
         GetComponentInChildren<Light>().enabled = true;
-        lrenderer = GetComponent<LineRenderer>();
+        rb = GetComponent<Rigidbody>();
     }
     
     protected void FireProjectile(Vector3 direction, float force) 
@@ -58,7 +59,7 @@ public abstract class SecurityObject : MonoBehaviour {
             {
                 Player hitPlayer = hit.rigidbody.GetComponent<Player>();
                 float angle = Vector3.Angle(transform.forward, targetDir.normalized);
-                if (hitPlayer && angle < 5 && hit.distance < 50)
+                if (hitPlayer && (angle < 20 && hit.distance < 10) || (angle < 90 && hit.distance < 2))
                 {
                     GetComponentInChildren<Light>().color = Color.red;
                     playerTarget = hitPlayer;
@@ -81,7 +82,6 @@ public abstract class SecurityObject : MonoBehaviour {
                     if (securityState == SecurityState.CHASING)
                     {
                         securityState = SecurityState.SEARCHING;
-                        lrenderer.positionCount = 0;
                         playerTarget = null;
                         OnLostPlayer();
                         
@@ -94,7 +94,6 @@ public abstract class SecurityObject : MonoBehaviour {
                 if (securityState == SecurityState.CHASING)
                 {
                     securityState = SecurityState.SEARCHING;
-                    lrenderer.positionCount = 0;
                     playerTarget = null;
                     OnLostPlayer();
                 }

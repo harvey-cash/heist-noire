@@ -7,7 +7,7 @@ public class Turret : SecurityObject, IDamageable
     [SerializeField]
     private float swingRange = 90;
     private float speedCoeff = 0.5f, chaseCoeff = 0.1f;
-    private float shootDelay = 0.1f;
+    private float shootDelay = 0.25f;
 
     private float progress = 0, resetTime = 0, reloadTime = 0;
     private Quaternion lostRot;
@@ -48,7 +48,7 @@ public class Turret : SecurityObject, IDamageable
         if (playerTarget != null) 
         {
 
-            Vector3 targetDir = playerTarget.transform.position + playerTarget.rb.velocity * 5 - transform.position;
+            Vector3 targetDir = playerTarget.transform.position + playerTarget.rb.velocity * 60 - transform.position;
 
             transform.forward = Vector3.RotateTowards(transform.forward, targetDir , speedCoeff * 4 * Time.deltaTime, 0);
 
@@ -61,8 +61,11 @@ public class Turret : SecurityObject, IDamageable
                 transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, -swingRange, transform.localEulerAngles.z);
 
             reloadTime += Time.deltaTime;
-            if (reloadTime > shootDelay) {
-                FireProjectile(transform.forward, 200);
+            if (reloadTime > shootDelay) 
+            {
+                
+                CameraManager.Instance.StartScreenShake(0.15f, 0.25f);
+                FireProjectile(transform.forward, 700);
                 reloadTime = 0;
             }
         }
