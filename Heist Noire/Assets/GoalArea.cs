@@ -14,6 +14,7 @@ public class GoalArea : MonoBehaviour
         {
             Debug.Log("goal trigger");
             LevelManager.Instance.continueText.SetActive(true);
+            LevelManager.Instance.PlayCompleteMusic();
             LevelManager.Instance.hasWon = true;
             if (LevelManager.Instance.currentLevelIndex >= LevelManager.Instance.Levels.Length - 1)
             {

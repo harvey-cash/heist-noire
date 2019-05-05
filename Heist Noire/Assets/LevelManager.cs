@@ -17,6 +17,7 @@ public class LevelManager : MonoBehaviour
 
     public AudioClip stealthMusic;
     public AudioClip actionMusic;
+    public AudioClip completeMusic;
     private AudioSource musicPlayer;
 
     private Player player;
@@ -88,6 +89,7 @@ public class LevelManager : MonoBehaviour
     {
         if (musicPlayer)
         {
+            musicPlayer.loop = true;
             StopAllCoroutines();
             if (musicPlayer.clip != actionMusic)
             {
@@ -100,6 +102,23 @@ public class LevelManager : MonoBehaviour
             }
         }
         
+    }
+
+    public void PlayCompleteMusic()
+    {
+        if (musicPlayer)
+        {
+            musicPlayer.loop = false;
+            StopAllCoroutines();
+            if (musicPlayer.clip != completeMusic)
+            {
+                float oldtime = musicPlayer.time;
+                musicPlayer.clip = completeMusic;
+                musicPlayer.time = 0;
+                musicPlayer.volume = 1f;
+                musicPlayer.Play();
+            }
+        }
     }
     
     public void PlayStealthMusic()
@@ -115,9 +134,10 @@ public class LevelManager : MonoBehaviour
         StopAllCoroutines();
         if (musicPlayer)
         {
-
+        
             if (musicPlayer.clip != stealthMusic)
             {
+                musicPlayer.loop = true;
                 float oldtime = musicPlayer.time;
                 musicPlayer.clip = stealthMusic;
                 musicPlayer.time = oldtime;
