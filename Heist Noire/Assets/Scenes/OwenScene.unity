@@ -83077,10 +83077,10 @@ PrefabInstance:
       propertyPath: playerTarget
       value: 
       objectReference: {fileID: 1416399966}
-    - target: {fileID: 777204458896566641, guid: d29463fc9615deb459862dd9eb5c938d,
+    - target: {fileID: 777204457612584950, guid: d29463fc9615deb459862dd9eb5c938d,
         type: 3}
-      propertyPath: m_Radius
-      value: 4
+      propertyPath: m_Constraints
+      value: 112
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d29463fc9615deb459862dd9eb5c938d, type: 3}

@@ -10,12 +10,15 @@ public abstract class SecurityObject : MonoBehaviour
     protected SecurityState securityState = SecurityState.PATROLLING;
     protected float loseThenSearchTimeout = 2;
 
+    protected Transform directionPointer;
+    
     [SerializeField]
     public Player playerTarget;
 
     private Player player;
     protected virtual void Awake()
     {
+        directionPointer = transform;
         player = FindObjectOfType<Player>();
         GetComponentInChildren<Light>().enabled = true;
         rb = GetComponent<Rigidbody>();
@@ -58,7 +61,7 @@ public abstract class SecurityObject : MonoBehaviour
             if (hit.rigidbody)
             {
                 Player hitPlayer = hit.rigidbody.GetComponent<Player>();
-                float angle = Vector3.Angle(transform.forward, targetDir.normalized);
+                float angle = Vector3.Angle(directionPointer.forward, targetDir.normalized);
                 if (hitPlayer && (angle < 10 && hit.distance < 35) || (angle < 90 && hit.distance < 2))
                 {
                     GetComponentInChildren<Light>().color = Color.red;
@@ -102,7 +105,7 @@ public abstract class SecurityObject : MonoBehaviour
         }
     }
     
-    private void Update()
+    protected virtual void Update()
     {
         if (!player)
             return;

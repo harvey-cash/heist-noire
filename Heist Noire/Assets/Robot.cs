@@ -6,9 +6,14 @@ public class Robot : SecurityObject, IDamageable
 {
     private Transform[] waypoints;
     public Transform WaypointHolder;
-    private int moveSpeed = 5;
+    private int moveSpeed = 2;
     private int currentWaypointIndex = 1;
     private int health = 1;
+    private Animator animator;
+    private SpriteRenderer SpriteRenderer;
+    public Transform spotLight;
+
+    public Transform Point;
     
     public void OnDie()
     {
@@ -32,9 +37,24 @@ public class Robot : SecurityObject, IDamageable
     {
         base.Awake();
         waypoints = WaypointHolder.GetComponentsInChildren<Transform>();
+        animator = GetComponentInChildren<Animator>();
+        SpriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        directionPointer = Point;
     }
-    
-    
+
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.rigidbody)
+        {
+            if (other.rigidbody.gameObject.GetComponent<Player>())
+            {
+                FindObjectOfType<Player>().TakeDamage(1);
+            }
+        }
+    }
+
     protected override void OnFoundPlayer(Player player)
     {
         
@@ -45,14 +65,18 @@ public class Robot : SecurityObject, IDamageable
         
     }
     
-
     protected override void Patrol()
     {
         Vector3 targetDir = (waypoints[currentWaypointIndex].position - transform.position);
-        transform.forward = targetDir.normalized;
-        transform.localEulerAngles = Vector3.Scale(Vector3.up, transform.localEulerAngles);
-        rb.MovePosition(transform.position + transform.forward * moveSpeed * Time.deltaTime);
+
+        Vector3 deltaPos = targetDir * moveSpeed;
+
+        SpriteRenderer.flipX = deltaPos.x < -0.1f;
         
+        rb.MovePosition(transform.position + deltaPos * Time.deltaTime);
+        spotLight.transform.forward = targetDir;
+        spotLight.transform.localEulerAngles = Vector3.Scale(Vector3.up, spotLight.transform.localEulerAngles);
+        directionPointer.localEulerAngles = spotLight.transform.localEulerAngles;
         if (targetDir.magnitude < 1)
         {
             currentWaypointIndex++;
@@ -66,20 +90,32 @@ public class Robot : SecurityObject, IDamageable
         if (playerTarget)
         {
             CameraManager.Instance.StartScreenShake(0.15f, 0.25f);
-            transform.LookAt(playerTarget.transform);
-            transform.localEulerAngles = Vector3.Scale(Vector3.up, transform.localEulerAngles);
-            rb.MovePosition(transform.position + transform.forward * moveSpeed * 2.5f * Time.deltaTime);
+            Vector3 targetDir = (playerTarget.transform.position - transform.position);
+            spotLight.transform.forward = targetDir;
+            spotLight.transform.localEulerAngles = Vector3.Scale(Vector3.up, spotLight.transform.localEulerAngles);
+            directionPointer.localEulerAngles = spotLight.transform.localEulerAngles;
+            Vector3 deltaPos = targetDir * moveSpeed * 2f + targetDir.normalized * 3;
+            
+            SpriteRenderer.flipX = deltaPos.x < -0.1f;
+            
+            
+            rb.MovePosition(transform.position + deltaPos * Time.deltaTime);
         }
+        CameraManager.Instance.StartScreenShake(0, 0);
     }
 
     protected override void Search()
     {
         Vector3 targetDir = (waypoints[currentWaypointIndex].position - transform.position);
-        transform.forward = targetDir.normalized;
-        transform.localEulerAngles = Vector3.Scale(Vector3.up, transform.localEulerAngles);
+
+        Vector3 deltaPos = targetDir * moveSpeed;
+
+        SpriteRenderer.flipX = deltaPos.x < -0.1f;
         
-        rb.MovePosition(transform.position + transform.forward * moveSpeed * Time.deltaTime);
-        
+        rb.MovePosition(transform.position + deltaPos * Time.deltaTime);
+        spotLight.transform.forward = targetDir;
+        spotLight.transform.localEulerAngles = Vector3.Scale(Vector3.up, spotLight.transform.localEulerAngles);
+        directionPointer.localEulerAngles = spotLight.transform.localEulerAngles;
         if (targetDir.magnitude < 1)
         {
             currentWaypointIndex++;

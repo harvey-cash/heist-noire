@@ -2209,6 +2209,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 685523926032861809, guid: 4f54d9ff52c5bae4fbb86f038213ddfa,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.19
+      objectReference: {fileID: 0}
     - target: {fileID: 685523924189487762, guid: 4f54d9ff52c5bae4fbb86f038213ddfa,
         type: 3}
       propertyPath: WaypointHolder
@@ -3168,6 +3173,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5529649281437564990, guid: ce83f0e3d08ad7b448a8528999d14afd,
+        type: 3}
+      propertyPath: m_Radius
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce83f0e3d08ad7b448a8528999d14afd, type: 3}
