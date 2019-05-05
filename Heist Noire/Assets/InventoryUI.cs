@@ -12,6 +12,8 @@ public class InventoryUI : MonoBehaviour
     private Player player;
     public GameObject LootIcon;
 
+    public Sprite defaultIcon;
+    
     private List<Image> IconImages;
 
     void Awake()
@@ -61,7 +63,7 @@ public class InventoryUI : MonoBehaviour
         }
         else
         {
-            Icon.sprite = null;
+            Icon.sprite = defaultIcon;
             Icon.GetComponentInChildren<Text>().text ="";
         }
     }
