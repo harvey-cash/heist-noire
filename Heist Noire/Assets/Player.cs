@@ -24,8 +24,14 @@ public class Player : MonoBehaviour, IDamageable
     private SpriteRenderer spriteRenderer;
     private Animator animator;
     private Collider[] colliders;
+    public GameObject DeadAnimation;
 
     public LineRenderer throwIndicator;
+
+
+    public int score;
+    
+    private Vector3 startPos;
     
     void Start()
     {
@@ -35,12 +41,36 @@ public class Player : MonoBehaviour, IDamageable
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         InventoryUI.Instance.Init(this);
         colliders = GetComponentsInChildren<Collider>();
-        
+        LevelManager.Instance.Init();
     }
 
     public void OnDie()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
+        DeadAnimation.transform.position = transform.position;
+        DeadAnimation.SetActive(true);
+        DeadAnimation.GetComponentInChildren<DeadPlayer>(true).SetPlayer(this);
+    }
+
+    public void Reset()
+    {
+        transform.position = GameObject.FindWithTag("SpawnPoint").transform.position;
+        DeadAnimation.SetActive(false);
+        Destroy(lootHolder.gameObject);
+        lootHolder = new GameObject("loot holder").transform;
+        lootHolder.SetParent(transform);
+        if (currentLoot != null)
+        {
+            foreach (var loot in CurrentLoot)
+            {
+                RemoveLootFromInventory(loot);
+            }
+        }
+        else
+        {
+            currentLoot = new Loot[InventorySize];
+        }
+
     }
     
     public void OnHit()
@@ -49,6 +79,7 @@ public class Player : MonoBehaviour, IDamageable
 
     public void TakeDamage(int x)
     {
+        LevelManager.Instance.retryText.SetActive(true);
         OnDie();
     }
 
@@ -147,6 +178,15 @@ public class Player : MonoBehaviour, IDamageable
             }
         }
 
+    }
+
+    public void AddScore()
+    {
+        foreach (var loot in currentLoot)
+        {
+            if (loot)
+                score += loot.value;
+        }
     }
     
     private void DropLoot(Loot loot)
