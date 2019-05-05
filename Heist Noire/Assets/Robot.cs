@@ -6,7 +6,7 @@ public class Robot : SecurityObject
 {
     private Transform[] waypoints;
     public Transform WaypointHolder;
-    private int moveSpeed = 10;
+    private int moveSpeed = 5;
     private int currentWaypointIndex = 1;
 
     protected override void Awake()
@@ -30,8 +30,10 @@ public class Robot : SecurityObject
     protected override void Patrol()
     {
         Vector3 targetDir = (waypoints[currentWaypointIndex].position - transform.position);
-        rb.MovePosition(transform.position + targetDir.normalized * moveSpeed * Time.deltaTime);
         transform.forward = targetDir.normalized;
+        transform.localEulerAngles = Vector3.Scale(Vector3.up, transform.localEulerAngles);
+        rb.MovePosition(transform.position + transform.forward * moveSpeed * Time.deltaTime);
+        
         if (targetDir.magnitude < 1)
         {
             currentWaypointIndex++;
@@ -44,15 +46,27 @@ public class Robot : SecurityObject
     {
         if (playerTarget)
         {
-            Vector3 targetDir = (playerTarget.transform.position - transform.position).normalized;
-            transform.LookAt(targetDir);
-            rb.MovePosition(transform.position + targetDir * moveSpeed * 2 * Time.deltaTime);
+            CameraManager.Instance.StartScreenShake(0.15f, 0.25f);
+            transform.LookAt(playerTarget.transform);
+            transform.localEulerAngles = Vector3.Scale(Vector3.up, transform.localEulerAngles);
+            rb.MovePosition(transform.position + transform.forward * moveSpeed * 2.5f * Time.deltaTime);
         }
     }
 
     protected override void Search()
     {
-        Patrol();
+        Vector3 targetDir = (waypoints[currentWaypointIndex].position - transform.position);
+        transform.forward = targetDir.normalized;
+        transform.localEulerAngles = Vector3.Scale(Vector3.up, transform.localEulerAngles);
+        
+        rb.MovePosition(transform.position + transform.forward * moveSpeed * Time.deltaTime);
+        
+        if (targetDir.magnitude < 1)
+        {
+            currentWaypointIndex++;
+            if (currentWaypointIndex >= waypoints.Length)
+                currentWaypointIndex = 1;
+        }
     }
 
 }

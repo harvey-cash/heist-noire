@@ -59,7 +59,7 @@ public abstract class SecurityObject : MonoBehaviour
             {
                 Player hitPlayer = hit.rigidbody.GetComponent<Player>();
                 float angle = Vector3.Angle(transform.forward, targetDir.normalized);
-                if (hitPlayer && (angle < 20 && hit.distance < 10) || (angle < 90 && hit.distance < 2))
+                if (hitPlayer && (angle < 10 && hit.distance < 35) || (angle < 90 && hit.distance < 2))
                 {
                     GetComponentInChildren<Light>().color = Color.red;
                     playerTarget = hitPlayer;
@@ -69,7 +69,7 @@ public abstract class SecurityObject : MonoBehaviour
                         
                         if (!playerTarget)
                         {
-                            
+                            CameraManager.Instance.StartScreenShake(0.15f, 0.25f);
                             OnFoundPlayer(hitPlayer);
                             
                         }

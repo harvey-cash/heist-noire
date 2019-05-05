@@ -47,7 +47,7 @@ public class Turret : SecurityObject, IDamageable
 
         if (playerTarget != null) 
         {
-
+            
             Vector3 targetDir = playerTarget.transform.position + playerTarget.rb.velocity * 60 - transform.position;
 
             transform.forward = Vector3.RotateTowards(transform.forward, targetDir , speedCoeff * 4 * Time.deltaTime, 0);
