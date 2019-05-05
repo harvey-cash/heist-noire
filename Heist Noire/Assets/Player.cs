@@ -24,6 +24,8 @@ public class Player : MonoBehaviour, IDamageable
     private SpriteRenderer spriteRenderer;
     private Animator animator;
     private Collider[] colliders;
+
+    public LineRenderer throwIndicator;
     
     void Start()
     {
@@ -33,6 +35,7 @@ public class Player : MonoBehaviour, IDamageable
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         InventoryUI.Instance.Init(this);
         colliders = GetComponentsInChildren<Collider>();
+        
     }
 
     public void OnDie()
@@ -58,6 +61,21 @@ public class Player : MonoBehaviour, IDamageable
     void Update()
     {
         InputScript();
+        DrawThrowIndicator();
+    }
+
+    private void DrawThrowIndicator() {
+        Vector3 direction = new Vector3(Input.GetAxisRaw("XAim"), 0, Input.GetAxisRaw("YAim")) * 5;
+
+        Vector3 origin = new Vector3(transform.position.x, 0, transform.position.z);
+        Vector3 end = origin + direction;
+
+        throwIndicator.widthCurve = new AnimationCurve(
+         new Keyframe(0, 0.4f)
+         , new Keyframe(0.999f - 0.2f, 0.4f)  // neck of arrow
+         , new Keyframe(1 - 0.2f, 1f)  // max width of arrow head
+         , new Keyframe(1, 0f));
+        throwIndicator.SetPositions(new Vector3[] { origin, end });
     }
 
     private void IncreaseInventoryIndex()

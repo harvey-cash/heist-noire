@@ -84876,6 +84876,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8112255089930926158, guid: 90c01be1be4abab4488720cf241d656b,
+        type: 3}
+      propertyPath: throwIndicator
+      value: 
+      objectReference: {fileID: 960340308}
     - target: {fileID: 8112255089930926152, guid: 90c01be1be4abab4488720cf241d656b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -84929,14 +84934,6 @@ PrefabInstance:
     - target: {fileID: 8112255089930926152, guid: 90c01be1be4abab4488720cf241d656b,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1298792842, guid: 90c01be1be4abab4488720cf241d656b, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 5dd0d9b900c10d441a49401444e8a4a2, type: 2}
-    - target: {fileID: 1298792842, guid: 90c01be1be4abab4488720cf241d656b, type: 3}
-      propertyPath: m_FlipX
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 534669905, guid: 90c01be1be4abab4488720cf241d656b, type: 3}
