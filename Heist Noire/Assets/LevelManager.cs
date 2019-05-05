@@ -15,6 +15,10 @@ public class LevelManager : MonoBehaviour
     public bool hasWon;
 
 
+    public AudioClip stealthMusic;
+    public AudioClip actionMusic;
+    private AudioSource musicPlayer;
+
     private Player player;
     public GameObject continueText;
     public GameObject retryText;
@@ -22,6 +26,8 @@ public class LevelManager : MonoBehaviour
     private bool gameOver = false;
     public static LevelManager Instance;
 
+    
+    
     void Awake()
     {
         if (!Instance || Instance == this)
@@ -63,6 +69,60 @@ public class LevelManager : MonoBehaviour
         player.gameObject.SetActive(false);
         Invoke("ResetPlayer", 0.05f);
         
+        
+        GameObject obj = GameObject.Find("musicplayer");
+        if (!obj)
+        {
+            musicPlayer = new GameObject("musicplayer").AddComponent<AudioSource>();
+            DontDestroyOnLoad(musicPlayer.gameObject);
+        }
+        else
+        {
+            musicPlayer = obj.GetComponent<AudioSource>();
+        }
+        ActivateStealthMusic();
+        
+    }
+
+    public void PlayActionMusic()
+    {
+        if (musicPlayer)
+        {
+            StopAllCoroutines();
+            if (musicPlayer.clip != actionMusic)
+            {
+                Debug.Log("play action music");
+                float oldtime = musicPlayer.time;
+                musicPlayer.clip = actionMusic;
+                musicPlayer.time = 0;
+                musicPlayer.volume = 0.2f;
+                musicPlayer.Play();
+            }
+        }
+        
+    }
+    
+    public void PlayStealthMusic()
+    {
+        
+        Invoke("ActivateStealthMusic", 3f);
+        
+    }
+
+    void ActivateStealthMusic()
+    {
+        StopAllCoroutines();
+        if (musicPlayer)
+        {
+
+            if (musicPlayer.clip != stealthMusic)
+            {
+                float oldtime = musicPlayer.time;
+                musicPlayer.clip = stealthMusic;
+                musicPlayer.time = oldtime;
+                musicPlayer.Play();
+            }
+        }
     }
 
     void ResetPlayer()
@@ -78,6 +138,14 @@ public class LevelManager : MonoBehaviour
                 CompleteLevel();
                 
         }
+
+        if (musicPlayer)
+        {
+            if (musicPlayer.volume < 1)
+            {
+                musicPlayer.volume += Time.deltaTime/3;
+            }
+        }
     }
 
     public void CompleteLevel()
@@ -86,7 +154,7 @@ public class LevelManager : MonoBehaviour
         currentLevelIndex++;
         if (currentLevelIndex >= Levels.Length)
         {
-            SceneManager.LoadSceneAsync("OwenScene");
+            SceneManager.LoadSceneAsync("TitleScreen");
         }
         else
         {

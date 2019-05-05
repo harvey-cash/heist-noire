@@ -219,6 +219,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c18f95010db98074ba43e818266dbeed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DeathObject: {fileID: 5646147470736850378, guid: 6644ff937194eea4aabf79ad266206d3,
+    type: 3}
   playerTarget: {fileID: 0}
   swingRange: 40
 --- !u!65 &3118799997659618986

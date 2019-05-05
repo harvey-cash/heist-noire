@@ -17,6 +17,7 @@ public class Robot : SecurityObject, IDamageable
     
     public void OnDie()
     {
+        Instantiate(DeathObject, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
     

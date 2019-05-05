@@ -5,7 +5,7 @@ using UnityEngine;
 public class ThrowableLoot : Loot, IProjectable
 {
     public bool HasBeenThrown = false;
-
+    public AudioClip smash;
     private bool canDamage = true;
     
     protected override void UseEffect(Player player)
@@ -17,11 +17,15 @@ public class ThrowableLoot : Loot, IProjectable
     {
         if (HasBeenThrown)
         {
+            AudioSource source = gameObject.AddComponent<AudioSource>();
+            source.clip = smash;
+            source.Play();
             Rigidbody otherRb = other.rigidbody;
             if (otherRb && canDamage)
             {
                 Destroy(gameObject);
                 canDamage = false;
+                
                 IDamageable damageable = other.rigidbody.GetComponent<IDamageable>();
                 if (damageable != null) 
                     damageable.TakeDamage(1);
@@ -33,6 +37,7 @@ public class ThrowableLoot : Loot, IProjectable
 
     void DeleteSelf()
     {
+        
         Destroy(gameObject);
     }
 

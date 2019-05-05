@@ -9,7 +9,7 @@ public abstract class SecurityObject : MonoBehaviour
     protected Rigidbody rb;
     protected SecurityState securityState = SecurityState.PATROLLING;
     protected float loseThenSearchTimeout = 2;
-
+    public GameObject DeathObject;
     protected Transform directionPointer;
     
     [SerializeField]
@@ -64,6 +64,7 @@ public abstract class SecurityObject : MonoBehaviour
                 float angle = Vector3.Angle(directionPointer.forward, targetDir.normalized);
                 if (hitPlayer && (angle < 10 && hit.distance < 35) || (angle < 90 && hit.distance < 2))
                 {
+                    LevelManager.Instance.PlayActionMusic();
                     GetComponentInChildren<Light>().color = Color.red;
                     playerTarget = hitPlayer;
                     if (securityState == SecurityState.SEARCHING || securityState == SecurityState.PATROLLING)
@@ -87,6 +88,7 @@ public abstract class SecurityObject : MonoBehaviour
                         securityState = SecurityState.SEARCHING;
                         playerTarget = null;
                         OnLostPlayer();
+                        LevelManager.Instance.PlayStealthMusic();
                         
                     }
                 }
@@ -99,6 +101,7 @@ public abstract class SecurityObject : MonoBehaviour
                     securityState = SecurityState.SEARCHING;
                     playerTarget = null;
                     OnLostPlayer();
+                    LevelManager.Instance.PlayStealthMusic();
                 }
             }
 

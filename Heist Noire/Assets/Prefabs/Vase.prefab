@@ -159,6 +159,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   Icon: {fileID: 21300000, guid: 750cdb19203b73b4c85e07d3453c6daf, type: 3}
   HasBeenThrown: 0
+  smash: {fileID: 8300000, guid: e8c3a2a28d3b3084d99a444ba4b442e7, type: 3}
 --- !u!1001 &8659592590611295262
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -17,8 +17,10 @@ public class Turret : SecurityObject, IDamageable
     
     public void OnDie()
     {
+        Instantiate(DeathObject, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
+    
     
     public void OnHit()
     {

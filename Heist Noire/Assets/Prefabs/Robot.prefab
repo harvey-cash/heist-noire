@@ -138,6 +138,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87e5868771779a74b802348b167f5553, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DeathObject: {fileID: 5646147470736850378, guid: 6644ff937194eea4aabf79ad266206d3,
+    type: 3}
   playerTarget: {fileID: 0}
   WaypointHolder: {fileID: 0}
   spotLight: {fileID: 1658409663}
