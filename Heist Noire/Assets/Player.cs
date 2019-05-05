@@ -135,6 +135,14 @@ public class Player : MonoBehaviour, IDamageable
         InventoryUI.Instance.UpdateIcons();
     }
 
+    public void Alert()
+    {
+        Debug.Log("ALert");
+        GetComponent<AudioSource>().Play();
+        GetComponent<AudioSource>().time = 0;
+        
+    }
+
     void InputScript()
     {
         Vector3 movement_vector = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));

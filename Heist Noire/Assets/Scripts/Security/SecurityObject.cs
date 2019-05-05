@@ -70,9 +70,10 @@ public abstract class SecurityObject : MonoBehaviour
                     if (securityState == SecurityState.SEARCHING || securityState == SecurityState.PATROLLING)
                     {
                         securityState = SecurityState.CHASING;
-                        
+                        hitPlayer.Alert();
                         if (!playerTarget)
                         {
+                            
                             CameraManager.Instance.StartScreenShake(0.15f, 0.25f);
                             OnFoundPlayer(hitPlayer);
                             

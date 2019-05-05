@@ -111,6 +111,7 @@ public class LevelManager : MonoBehaviour
 
     void ActivateStealthMusic()
     {
+        
         StopAllCoroutines();
         if (musicPlayer)
         {
