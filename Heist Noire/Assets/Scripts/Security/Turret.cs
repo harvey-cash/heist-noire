@@ -63,8 +63,7 @@ public class Turret : SecurityObject, IDamageable
             reloadTime += Time.deltaTime;
             if (reloadTime > shootDelay) 
             {
-                
-                CameraManager.Instance.StartScreenShake(0.15f, 0.25f);
+                CameraManager.Instance.StartScreenShake(0.2f, 0.35f);
                 FireProjectile(transform.forward, 700);
                 reloadTime = 0;
             }

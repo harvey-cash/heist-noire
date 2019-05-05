@@ -65,11 +65,20 @@ public class Player : MonoBehaviour, IDamageable
     }
 
     private void DrawThrowIndicator() {
-        Vector3 direction = new Vector3(Input.GetAxisRaw("XAim"), 0, Input.GetAxisRaw("YAim")) * 5;
-
+        Vector3 direction = new Vector3(Input.GetAxisRaw("XAim"), 0, Input.GetAxisRaw("YAim")) * 12;
+        
         Vector3 origin = new Vector3(transform.position.x, 0, transform.position.z);
+        
+        
+        
         Vector3 end = origin + direction;
 
+        if (!(currentLoot[InventoryIndex] as ThrowableLoot))
+        {
+            end = origin;
+        }
+        
+        
         throwIndicator.widthCurve = new AnimationCurve(
          new Keyframe(0, 0.4f)
          , new Keyframe(0.999f - 0.2f, 0.4f)  // neck of arrow

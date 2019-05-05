@@ -2,13 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Robot : SecurityObject
+public class Robot : SecurityObject, IDamageable
 {
     private Transform[] waypoints;
     public Transform WaypointHolder;
     private int moveSpeed = 5;
     private int currentWaypointIndex = 1;
+    private int health = 1;
+    
+    public void OnDie()
+    {
+        Destroy(gameObject);
+    }
+    
+    public void OnHit()
+    {
+    }
 
+    public void TakeDamage(int x)
+    {
+        health--;
+        if (health < 1)
+        {
+            OnDie();
+        }
+    }
+    
     protected override void Awake()
     {
         base.Awake();

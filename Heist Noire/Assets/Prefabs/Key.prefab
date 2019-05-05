@@ -64,7 +64,7 @@ MonoBehaviour:
   value: 1
   PickedUp: 0
   rb: {fileID: 0}
-  Icon: {fileID: 21300000, guid: 14421bda11d8bc44e843674a47ff2813, type: 3}
+  Icon: {fileID: 21300000, guid: 70185603aadbd2f49a9f527a18fa2720, type: 3}
 --- !u!1 &912438366617531994
 GameObject:
   m_ObjectHideFlags: 0

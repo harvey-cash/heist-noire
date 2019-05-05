@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class ThrowableLoot : Loot, IProjectable
 {
-    public bool HasBeenThrown = false; 
+    public bool HasBeenThrown = false;
+
+    private bool canDamage = true;
     
     protected override void UseEffect(Player player)
     {
@@ -16,10 +18,13 @@ public class ThrowableLoot : Loot, IProjectable
         if (HasBeenThrown)
         {
             Rigidbody otherRb = other.rigidbody;
-            if (otherRb)
+            if (otherRb && canDamage)
             {
-                if (other.rigidbody.GetComponent<Turret>())
-                    other.rigidbody.GetComponent<Turret>().TakeDamage(1);
+                Destroy(gameObject);
+                canDamage = false;
+                IDamageable damageable = other.rigidbody.GetComponent<IDamageable>();
+                if (damageable != null) 
+                    damageable.TakeDamage(1);
             }
             StopAllCoroutines();
             Invoke("DeleteSelf", 2f);
