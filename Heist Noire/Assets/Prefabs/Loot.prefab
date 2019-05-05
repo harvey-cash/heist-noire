@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 912438366309335775}
   - component: {fileID: 912438366309335774}
-  - component: {fileID: 172464440908884608}
+  - component: {fileID: 8428713710874256524}
   m_Layer: 0
   m_Name: Loot
   m_TagString: Untagged
@@ -41,7 +41,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 912438366309335773}
   serializedVersion: 2
-  m_Mass: 0.2
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -49,7 +49,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &172464440908884608
+--- !u!114 &8428713710874256524
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -58,13 +58,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 912438366309335773}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bea8832fd4657f0499bf88a03e1f99ce, type: 3}
+  m_Script: {fileID: 11500000, guid: 11d015b1a0a78014e82c508c215305be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  value: 100
+  value: 500
   PickedUp: 0
   rb: {fileID: 0}
   Icon: {fileID: 21300000, guid: aebc61bdd4a69bf4fab00258e98ebc5d, type: 3}
+  HasBeenThrown: 0
+  smash: {fileID: 0}
 --- !u!1 &912438366617531994
 GameObject:
   m_ObjectHideFlags: 0
