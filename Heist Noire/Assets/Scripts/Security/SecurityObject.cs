@@ -70,7 +70,8 @@ public abstract class SecurityObject : MonoBehaviour
                     if (securityState == SecurityState.SEARCHING || securityState == SecurityState.PATROLLING)
                     {
                         securityState = SecurityState.CHASING;
-                        hitPlayer.Alert();
+                        if (hitPlayer)
+                            hitPlayer.Alert();
                         if (!playerTarget)
                         {
                             

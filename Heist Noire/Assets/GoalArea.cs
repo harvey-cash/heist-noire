@@ -16,11 +16,12 @@ public class GoalArea : MonoBehaviour
             LevelManager.Instance.continueText.SetActive(true);
             LevelManager.Instance.PlayCompleteMusic();
             LevelManager.Instance.hasWon = true;
+            FindObjectOfType<Player>().AddScore();
             if (LevelManager.Instance.currentLevelIndex >= LevelManager.Instance.Levels.Length - 1)
             {
                 LevelManager.Instance.EndGame();
             }
-            FindObjectOfType<Player>().AddScore();
+            
             gameObject.SetActive(false);
             //FindObjectOfType<Player>().OnDie();
         };
