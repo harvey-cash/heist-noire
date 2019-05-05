@@ -14,6 +14,8 @@ public class LevelManager : MonoBehaviour
 
     public bool hasWon;
 
+
+    private Player player;
     public GameObject continueText;
     public GameObject retryText;
 
@@ -31,8 +33,8 @@ public class LevelManager : MonoBehaviour
             print("ERROR: Duplicate Camera");
             Destroy(gameObject);
         }
-        
-        
+
+        player = FindObjectOfType<Player>();
     }
 
 
@@ -58,12 +60,14 @@ public class LevelManager : MonoBehaviour
         
         Debug.Log(levelInstance);
         levelInstance.SetActive(true);
+        player.gameObject.SetActive(false);
         Invoke("ResetPlayer", 0.05f);
+        
     }
 
     void ResetPlayer()
     {
-        FindObjectOfType<Player>().Reset();
+        player.Reset();
     }
 
     private void Update()
@@ -72,8 +76,7 @@ public class LevelManager : MonoBehaviour
         {
             if (hasWon)    
                 CompleteLevel();
-            else if (gameOver)
-                SceneManager.LoadSceneAsync("OwenScene");
+                
         }
     }
 
@@ -83,7 +86,7 @@ public class LevelManager : MonoBehaviour
         currentLevelIndex++;
         if (currentLevelIndex >= Levels.Length)
         {
-            EndGame();
+            SceneManager.LoadSceneAsync("OwenScene");
         }
         else
         {
@@ -93,7 +96,7 @@ public class LevelManager : MonoBehaviour
 
     public void EndGame()
     {
-        continueText.SetActive(false);
+        continueText.SetActive(true);
         int score = FindObjectOfType<Player>().score;
         gameOver = true;
         continueText.GetComponentInChildren<TextMeshProUGUI>().text = "Thanks for playing! You made $" + score;

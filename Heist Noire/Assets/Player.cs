@@ -54,6 +54,7 @@ public class Player : MonoBehaviour, IDamageable
 
     public void Reset()
     {
+        gameObject.SetActive(true);
         transform.position = GameObject.FindWithTag("SpawnPoint").transform.position;
         DeadAnimation.SetActive(false);
         Destroy(lootHolder.gameObject);
